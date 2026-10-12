@@ -1,0 +1,35 @@
+- name: Download k3s installation script
+  ansible.builtin.get_url:
+    url: https://get.k3s.io/
+    dest: /tmp/k3s-install.sh
+    mode: "0755"
+
+- name: Launch k3s
+  ansible.builtin.command:
+    cmd: /tmp/k3s-install.sh
+    creates: /usr/local/bin/k3s
+  environment:
+    INSTALL_K3S_EXEC: "--write-kubeconfig-mode 644"
+    INSTALL_K3S_VERSION: "{{ k3s_version }}"
+
+- name: Check k3s-systemd status
+  ansible.builtin.systemd:
+    name: k3s
+    state: started
+    enabled: true
+
+# - name: Get k3s installed version
+#   ansible.builtin.command:
+#     cmd: k3s --version
+#   changed_when: false
+
+- name: Download k3s-configuration
+  ansible.builtin.fetch:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: ~/.kube/k3s-platform.yaml
+    flat: true
+
+- name: Setup Traefik manifest
+  ansible.builtin.copy:
+    src: traefik-config.yaml
+    dest: /var/lib/rancher/k3s/server/manifests/k3s-traefik-config.yaml

@@ -1,0 +1,5 @@
+- name: Setting up k3s on AWS
+  hosts: k3s_server
+  become: true
+  roles:
+    - k3s
