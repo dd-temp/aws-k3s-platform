@@ -1,0 +1,12 @@
+- name: Update and upgrade apt packages
+  hosts: all
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Run apt-get update && apt-get upgrade
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        autoremove: true
+        autoclean: true
