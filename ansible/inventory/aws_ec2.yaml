@@ -1,0 +1,19 @@
+# AWS SSM Connection
+plugin: amazon.aws.aws_ec2
+regions:
+  - us-east-1
+
+filters:
+  tag:Role:
+    - k3s-server
+  instance-state-name: running
+
+hostnames:
+  - instance-id
+
+compose:
+  ansible_aws_ssm_instance_id: instance_id
+
+groups:
+  k3s_server:
+    ec2_tags.Role == 'k3s-server'
