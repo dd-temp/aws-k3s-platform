@@ -5,30 +5,7 @@ Self-hosted Kubernetes (k3s) platform on AWS, provisioned with Terraform and con
 
 ## Architecture
 
-```mermaid
-flowchart TB
-    laptop["Laptop<br/>Terraform · Ansible · kubectl"]
-    users["Internet users"]
-    api["AWS API"]
-    ssm["AWS SSM"]
-    igw["Internet Gateway"]
-
-    laptop -->|terraform apply| api
-    laptop -->|SSM session / port forwarding| ssm
-    users -->|HTTP/HTTPS 80/443| igw
-
-    subgraph net["VPC 10.0.0.0/16 · public subnet 10.0.1.0/24"]
-      subgraph ec2["EC2 instance · no inbound SSH"]
-        agent["SSM Agent"]
-        traefik["k3s: Traefik + Gateway API"]
-        kapi["k3s: Kubernetes API :6443"]
-      end
-    end
-
-    ssm --> agent
-    agent -->|localhost:6443| kapi
-    igw --> traefik
-```
+<img src="./docs/architecture.png">
 
 ## Design decisions
 
